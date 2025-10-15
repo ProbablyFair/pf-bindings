@@ -1,0 +1,53 @@
+{
+  "name": "@probablyfair/pf-bindings",
+  "version": "0.1.0",
+  "description": "Native bindings for Probably Fair core library",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "cargo build --release -p pf-bindings-node",
+    "build:debug": "cargo build -p pf-bindings-node",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/probablyfair/pf-bindings.git"
+  },
+  "keywords": [
+    "probably-fair",
+    "verifiable-betting",
+    "cryptographic",
+    "native",
+    "rust",
+    "napi"
+  ],
+  "author": "Probably Fair",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">= 14"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "napi": {
+    "name": "pf-bindings",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "x86_64-pc-windows-msvc",
+        "i686-pc-windows-msvc",
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
+        "aarch64-unknown-linux-gnu",
+        "armv7-unknown-linux-gnueabihf"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.0"
+  }
+}

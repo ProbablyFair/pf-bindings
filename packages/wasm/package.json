@@ -1,0 +1,28 @@
+{
+  "name": "@probablyfair/pf-bindings-wasm",
+  "version": "0.1.0",
+  "description": "WebAssembly bindings for Probably Fair core library",
+  "main": "pkg/pf_bindings_wasm.js",
+  "types": "pkg/pf_bindings_wasm.d.ts",
+  "files": [
+    "pkg/"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg",
+    "build:node": "wasm-pack build --target nodejs --out-dir pkg-node",
+    "build:bundler": "wasm-pack build --target bundler --out-dir pkg-bundler"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/probablyfair/pf-bindings.git"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "probablyfair",
+    "crypto",
+    "betting"
+  ],
+  "author": "Probably Fair",
+  "license": "Apache-2.0"
+}

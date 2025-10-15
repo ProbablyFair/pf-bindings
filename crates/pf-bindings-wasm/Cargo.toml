@@ -1,0 +1,20 @@
+[package]
+name = "pf-bindings-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pf-bindings-core = { path = "../pf-bindings-core" }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+
+[dependencies.web-sys]
+version = "0.3"
+features = ["console"]
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

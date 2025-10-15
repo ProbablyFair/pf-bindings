@@ -1,0 +1,267 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "."
+
+      - name: Run tests
+        run: cargo test --workspace
+
+  build-and-release:
+    name: Build and Release
+    needs: test
+    strategy:
+      matrix:
+        settings:
+          - host: macos-latest
+            target: x86_64-apple-darwin
+          - host: macos-latest
+            target: aarch64-apple-darwin
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - host: windows-latest
+            target: x86_64-pc-windows-msvc
+
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.settings.target }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.settings.target }}
+          workspaces: "."
+
+      - name: Build all Rust bindings
+        run: |
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-node
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-csharp
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-go
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-java
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-swift
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-php
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-dart
+          cargo build --release --target ${{ matrix.settings.target }} -p pf-bindings-c
+
+      - name: Install maturin
+        run: pip install maturin
+
+      - name: Build Python wheel
+        run: |
+          cd packages/python
+          maturin build --release --out dist --target ${{ matrix.settings.target }}
+
+      - name: Build Go bindings
+        working-directory: packages/go
+        run: |
+          # Go bindings are headers + C library, no Go compilation needed in CI
+
+      - name: Build C# bindings
+        working-directory: packages/csharp
+        run: |
+          dotnet restore
+          dotnet build -c Release --runtime ${{ matrix.settings.target }}
+
+      - name: Build Java bindings
+        working-directory: packages/java
+        run: |
+          mvn compile package
+
+      - name: Build Swift bindings
+        run: |
+          # Swift package structure is created, actual build done by package manager
+
+      - name: Build PHP bindings
+        working-directory: packages/php
+        run: |
+          # PHP extension will be compiled during publish step
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Build Dart bindings
+        working-directory: packages/dart
+        run: |
+          flutter pub get
+
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WebAssembly bindings
+        working-directory: packages/wasm
+        run: |
+          npm install
+          cd ../../crates/pf-bindings-wasm && wasm-pack build --target web --out-dir ../../packages/wasm/pkg
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings-${{ matrix.settings.target }}
+          path: |
+            target/${{ matrix.settings.target }}/release/
+            dist/
+            packages/java/target/
+            packages/csharp/bin/Release/
+            packages/wasm/pkg/
+            packages/crates/pf-bindings-c/bindings/
+            packages/php/modules/
+            packages/php/*.zip
+
+  publish:
+    name: Publish
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish Node.js to NPM
+        working-directory: packages/node
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        run: |
+          pip install maturin twine
+
+      - name: Publish Python to PyPI
+        working-directory: packages/python
+        run: |
+          maturin publish --username __token__ --password ${{ secrets.PYPI_TOKEN }}
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "6.x"
+
+      - name: Publish C# to NuGet
+        working-directory: packages/csharp
+        run: |
+          dotnet pack -c Release
+          dotnet push --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.19"
+
+      - name: Publish Go module
+        working-directory: packages/go
+        run: |
+          git tag ${{ github.ref_name }} || true
+          git push origin ${{ github.ref_name }} || true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+          server-id: "ossrh"
+          server-username: ${{ secrets.MAVEN_USERNAME }}
+          server-password: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Publish Java to Maven Central
+        working-directory: packages/java
+        run: |
+          mvn clean deploy -P release
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+          extensions: none
+
+      - name: Build PHP extension
+        working-directory: packages/php
+        run: |
+          phpize
+          ./configure --enable-pf-bindings
+          make
+          make test
+
+      - name: Create PHP package
+        working-directory: packages/php
+        run: |
+          mkdir -p pf-bindings-php-$GITHUB_REF_NAME
+          cp modules/pf_bindings.so pf-bindings-php-$GITHUB_REF_NAME/
+          php composer.phar config dist
+          php composer.phar archive --format=zip pf-bindings-php-$GITHUB_REF_NAME.zip
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: "stable"
+
+      - name: Publish Dart to pub.dev
+        working-directory: packages/dart
+        run: |
+          dart pub publish --force
+        env:
+          PUB_TOKEN: ${{ secrets.PUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.node
+            artifacts/**/*.whl
+            artifacts/**/*.dll
+            artifacts/**/*.so
+            artifacts/**/*.dylib
+            artifacts/**/*.jar
+            artifacts/**/*.gem
+            artifacts/**/*.wasm
+            artifacts**/*.zip
+            artifacts/modules/*.so
+            artifacts/**/*.h
+            artifacts**/pf_bindings.h
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

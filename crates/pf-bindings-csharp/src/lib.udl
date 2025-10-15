@@ -1,0 +1,14 @@
+namespace pf {
+    [Error]
+    enum PfError {
+        BindingError(String),
+    }
+
+    // Verify a bet receipt against its transcript
+    [Throws=PfError]
+    void verify_bet(string receipt_json, string transcript_json);
+
+    // Register a GDP package
+    [Throws=PfError] 
+    void register_gdp_package(sequence<u8> bytes);
+}
