@@ -1,0 +1,15 @@
+[package]
+name = "pf-bindings-java"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pf-bindings-core = { path = "../pf-bindings-core" }
+jni = "0.21"
+
+[build-dependencies]
+cbindgen = "0.24"

@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/PF.Bindings.csproj": {}
+  },
+  "projects": {
+    "/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/PF.Bindings.csproj": {
+      "version": "0.1.0",
+      "restore": {
+        "projectUniqueName": "/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/PF.Bindings.csproj",
+        "projectName": "PF.Bindings",
+        "projectPath": "/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/PF.Bindings.csproj",
+        "packagesPath": "/Users/marcxavier/.nuget/packages/",
+        "outputPath": "/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/marcxavier/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.8/libexec/sdk/9.0.109/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "x86_64-apple-darwin": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

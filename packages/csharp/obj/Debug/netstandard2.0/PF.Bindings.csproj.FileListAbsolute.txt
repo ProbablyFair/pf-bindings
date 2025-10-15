@@ -1,0 +1,11 @@
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/bin/Debug/netstandard2.0/PF.Bindings.deps.json
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/bin/Debug/netstandard2.0/PF.Bindings.dll
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/bin/Debug/netstandard2.0/PF.Bindings.pdb
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.csproj.AssemblyReference.cache
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.GeneratedMSBuildEditorConfig.editorconfig
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.AssemblyInfoInputs.cache
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.AssemblyInfo.cs
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.csproj.CoreCompileInputs.cache
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.sourcelink.json
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.dll
+/Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/obj/Debug/netstandard2.0/PF.Bindings.pdb

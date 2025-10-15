@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = PF.Bindings
+build_property.ProjectDir = /Users/marcxavier/Desktop/PF-VL/pf-bindings/packages/csharp/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

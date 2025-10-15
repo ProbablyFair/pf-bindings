@@ -1,0 +1,16 @@
+[package]
+name = "pf-bindings-node"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { workspace = true }
+napi-derive = { workspace = true }
+pf-bindings-core = { path = "../pf-bindings-core" }
+
+[build-dependencies]
+napi-build = "2"

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1.1</Version>
+    <Authors>Probably Fair</Authors>
+    <Description>C# bindings for Probably Fair core library</Description>
+    <Copyright>Copyright Probably Fair</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/probablyfair/pf-bindings</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/probablyfair/pf-bindings</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>probablyfair;verifiablebetting;crypto</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="runtimes/**/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
