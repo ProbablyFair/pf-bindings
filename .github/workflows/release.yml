@@ -83,10 +83,34 @@ jobs:
           dotnet restore
           dotnet build -c Release --runtime ${{ matrix.settings.target }}
 
+      - name: Setup Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
       - name: Build Java bindings
         working-directory: packages/java
         run: |
-          mvn compile package
+          # Retry Maven build with alternative mirrors on Windows
+          if [[ "${{ matrix.settings.host }}" == "windows-latest" ]]; then
+            # Try up to 3 times with different strategies
+            for i in {1..3}; do
+              echo "Attempt $i: Maven build on Windows"
+              if mvn -B compile package --no-transfer-progress -Dmaven.repo.local=$HOME/.m2/repository; then
+                break
+              elif [ $i -eq 3 ]; then
+                echo "Maven build failed after 3 attempts"
+                exit 1
+              else
+                echo "Attempt $i failed, retrying in 30 seconds..."
+                sleep 30
+              fi
+            done
+          else
+            mvn -B compile package --no-transfer-progress
+          fi
+        shell: bash
 
       - name: Build Swift bindings
         run: |
