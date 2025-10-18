@@ -206,7 +206,7 @@ jobs:
         working-directory: packages/csharp
         run: |
           dotnet pack -c Release
-          dotnet push --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: Setup Go
         uses: actions/setup-go@v4
